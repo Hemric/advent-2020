@@ -1,9 +1,24 @@
-use std::fs::File;
+use std::io;
 use std::io::prelude::*;
+use std::fs::File;
 use std::path::Path;
 
 fn main() {
-    day_1();
+    println!("Which day ?");
+
+    let mut day = String::new();
+
+    io::stdin()
+        .read_line(&mut day)
+        .expect("Error reading line");
+
+    let day: u32 = day.trim().parse()
+        .expect("Please type a number");
+
+    match day {
+        1 => day_1(),
+        _ => println!("Challenge not found"),
+    }
 }
 
 fn day_1() {
@@ -27,9 +42,9 @@ fn day_1() {
         let current_datum = data.pop().expect("No more data");
         for datum in &data {
             if current_datum + datum == 2020 {
-                println!("answer found : {} + {} = 2020", current_datum, datum);
+                println!("Answer found with: {} + {} = 2020", current_datum, datum);
                 let result = current_datum * datum;
-                println!("result : {}", result);
+                println!("Answer : {}", result);
                 answer_not_found = false;
             }
         }
