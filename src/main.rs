@@ -16,6 +16,7 @@ fn main() {
     match day {
         1 => day_1(),
         2 => day_2(),
+        3 => day_3(),
         _ => println!("Challenge not found"),
     }
 }
@@ -37,7 +38,7 @@ fn day_1() {
 
     let mut data: Vec<u32> = data
         .lines()
-        .map(|datum| datum.trim().parse::<u32>())
+        .map(|datum| datum.trim().parse())
         .filter_map(Result::ok)
         .collect();
 
@@ -64,8 +65,8 @@ fn day_2() {
 
     for cap in re.captures_iter(&data) {
         let letter_occurence = cap["password"].matches(&cap["letter"]).count();
-        let min: usize = cap["min"].parse().unwrap();
-        let max: usize = cap["max"].parse().unwrap();
+        let min = cap["min"].parse().unwrap();
+        let max = cap["max"].parse().unwrap();
 
         if letter_occurence >= min && letter_occurence <= max {
             valid_password_count += 1;
@@ -73,4 +74,38 @@ fn day_2() {
     }
 
     println!("Answer : {}", valid_password_count);
+}
+
+fn day_3() {
+    let data = load_data("./data/day_3.txt");
+    let lines: Vec<&str> = data.split("\n").collect();
+
+    let mut tree_count = 0;
+    let mut line_index = 1; // first line is ignored
+    let mut index = 3;
+
+    loop {
+        let line = lines[line_index];
+
+        let spot = match line.chars().nth(index) {
+            Some(x) => x,
+            None => {
+                let line_length = line.len();
+                if line_length == 0 {
+                    break;
+                }
+                index = index - line_length;
+                continue;
+            }
+        };
+
+        if spot == '#' {
+            tree_count += 1;
+        }
+
+        index += 3;
+        line_index += 1;
+    }
+
+    println!("Answer : {}", tree_count);
 }
