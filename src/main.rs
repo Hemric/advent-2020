@@ -1,6 +1,7 @@
+use regex::Regex;
+use std::fs::File;
 use std::io;
 use std::io::prelude::*;
-use std::fs::File;
 use std::path::Path;
 
 fn main() {
@@ -8,37 +9,34 @@ fn main() {
 
     let mut day = String::new();
 
-    io::stdin()
-        .read_line(&mut day)
-        .expect("Error reading line");
+    io::stdin().read_line(&mut day).expect("Error reading line");
 
-    let day: u32 = day.trim().parse()
-        .expect("Please type a number");
+    let day: u32 = day.trim().parse().expect("Please type a number");
 
     match day {
         1 => day_1(),
+        2 => day_2(),
         _ => println!("Challenge not found"),
     }
 }
 
 fn load_data(path: &str) -> String {
-    let path = Path::new(&path);
+    let path = Path::new(path);
 
-    let mut file = File::open(&path)
-        .expect("Error opening file");
+    let mut file = File::open(path).expect("Error opening file");
 
     let mut data = String::new();
 
-    file.read_to_string(&mut data)
-        .expect("Error reading file");
+    file.read_to_string(&mut data).expect("Error reading file");
 
-    return data;
+    data
 }
 
 fn day_1() {
     let data = load_data("./data/day_1.txt");
 
-    let mut data: Vec<u32> = data.lines()
+    let mut data: Vec<u32> = data
+        .lines()
         .map(|datum| datum.trim().parse::<u32>())
         .filter_map(Result::ok)
         .collect();
@@ -56,4 +54,23 @@ fn day_1() {
             }
         }
     }
+}
+
+fn day_2() {
+    let data = load_data("./data/day_2.txt");
+    let re =
+        Regex::new(r"(?P<min>\d+)-(?P<max>\d+) (?P<letter>[a-z]): (?P<password>[a-z]*)").unwrap();
+    let mut valid_password_count = 0;
+
+    for cap in re.captures_iter(&data) {
+        let letter_occurence = cap["password"].matches(&cap["letter"]).count();
+        let min: usize = cap["min"].parse().unwrap();
+        let max: usize = cap["max"].parse().unwrap();
+
+        if letter_occurence >= min && letter_occurence <= max {
+            valid_password_count += 1;
+        }
+    }
+
+    println!("Answer : {}", valid_password_count);
 }
