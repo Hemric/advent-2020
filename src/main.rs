@@ -21,15 +21,22 @@ fn main() {
     }
 }
 
-fn day_1() {
-    let path = Path::new("./data/day_1.txt");
+fn load_data(path: &str) -> String {
+    let path = Path::new(&path);
 
     let mut file = File::open(&path)
         .expect("Error opening file");
 
     let mut data = String::new();
+
     file.read_to_string(&mut data)
         .expect("Error reading file");
+
+    return data;
+}
+
+fn day_1() {
+    let data = load_data("./data/day_1.txt");
 
     let mut data: Vec<u32> = data.lines()
         .map(|datum| datum.trim().parse::<u32>())
