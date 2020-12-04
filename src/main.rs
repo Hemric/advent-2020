@@ -139,22 +139,15 @@ fn day_4() {
     .unwrap();
 
     let set_2 = RegexSet::new(&[
-        r"\bbyr:\d{4}\b",
-        r"\biyr:\d{4}\b",
-        r"\beyr:\d{4}\b",
-        r"\bhgt:\d+(cm|in)\b",
+        r"\bbyr:(19[2-9][0-9]|200[0-2])\b",
+        r"\biyr:(201[0-9]|2020)\b",
+        r"\beyr:(202[0-9]|2030)\b",
+        r"\bhgt:(1[5-8][0-9]cm|19[0-3]cm|59in|6[0-9]in|7[0-6]in)\b",
         r"\bhcl:#([a-f]|[0-9]){6}\b",
         r"\becl:(amb|blu|brn|gry|grn|hzl|oth)\b",
         r"\bpid:[0-9]{9}\b",
     ])
     .unwrap();
-
-    let res = [
-        Regex::new(r"\bbyr:(?P<byr>\d{4}\b)").unwrap(),
-        Regex::new(r"\biyr:(?P<iyr>\d{4}\b)").unwrap(),
-        Regex::new(r"\beyr:(?P<eyr>\d{4}\b)").unwrap(),
-        Regex::new(r"\bhgt:(?P<hgt>\d+(cm|in)\b)").unwrap(),
-    ];
 
     let mut valid_passport_count_1 = 0;
     let mut valid_passport_count_2 = 0;
@@ -168,25 +161,7 @@ fn day_4() {
 
         let matches: Vec<_> = set_2.matches(passport).iter().collect();
 
-        if matches.len() != set_2.len() {
-            continue;
-        }
-
-        let byr: usize = res[0].captures(passport).unwrap()["byr"].parse().unwrap();
-        let iyr: usize = res[1].captures(passport).unwrap()["iyr"].parse().unwrap();
-        let eyr: usize = res[2].captures(passport).unwrap()["eyr"].parse().unwrap();
-
-        let hgt: String = res[3].captures(passport).unwrap()["hgt"].to_string();
-        let hgt_len = hgt.len();
-        let hgt_unit: String = hgt[hgt_len - 2..].to_string();
-        let hgt_size: usize = hgt[..hgt_len - 2].parse().unwrap();
-
-        if (byr >= 1920 && byr <= 2002)
-            && (iyr >= 2010 && iyr <= 2020)
-            && (eyr >= 2020 && eyr <= 2030)
-            && ((hgt_unit == "cm" && hgt_size >= 150 && hgt_size <= 193)
-                || (hgt_unit == "in" && hgt_size >= 59 && hgt_size <= 76))
-        {
+        if matches.len() == set_2.len() {
             valid_passport_count_2 += 1;
         }
     }
