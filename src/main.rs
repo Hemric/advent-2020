@@ -1,4 +1,5 @@
 use regex::Regex;
+use regex::RegexSet;
 use std::fs::File;
 use std::io;
 use std::io::prelude::*;
@@ -17,6 +18,7 @@ fn main() {
         1 => day_1(),
         2 => day_2(),
         3 => day_3(),
+        4 => day_4(),
         _ => println!("Challenge not found"),
     }
 }
@@ -125,4 +127,31 @@ fn slop(lines: &Vec<&str>, right: usize, down: usize) -> u32 {
     println!("Right {}, Down {}, Tree {}", right, down, tree_count);
 
     tree_count
+}
+
+fn day_4() {
+    let data = load_data("./data/day_4.txt");
+    let passports: Vec<&str> = data.split("\n\n").collect();
+
+    let set = RegexSet::new(&[
+        r"byr:",
+        r"iyr:",
+        r"eyr:",
+        r"hgt:",
+        r"hcl:",
+        r"ecl:",
+        r"pid:",
+    ]).unwrap();
+
+    let mut valid_passport_count = 0;
+
+    for passport in passports.iter() {
+        let matches: Vec<_> = set.matches(passport).into_iter().collect();
+
+        if matches.len() == set.len() {
+            valid_passport_count += 1;
+        }
+    }
+
+    println!("Answer : {}", valid_passport_count);
 }
