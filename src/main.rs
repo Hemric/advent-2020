@@ -43,23 +43,30 @@ fn day_1() {
 
     let mut data: Vec<u32> = data
         .lines()
-        .map(|datum| datum.trim().parse())
-        .filter_map(Result::ok)
+        .map(|l| l.trim().parse::<u32>().unwrap())
         .collect();
 
     let mut answer_not_found = true;
+    let mut answer_1 = 0;
+    let mut answer_2 = 0;
 
     while answer_not_found {
-        let current_datum = data.pop().expect("No more data");
-        for datum in &data {
-            if current_datum + datum == 2020 {
-                println!("Answer found with: {} + {} = 2020", current_datum, datum);
-                let result = current_datum * datum;
-                println!("Answer : {}", result);
-                answer_not_found = false;
+        let d1 = data.pop().expect("No more data");
+        for d2 in &data {
+            if d1 + d2 == 2020 {
+                answer_1 = d1 * d2;
+            }
+            for d3 in &data {
+                if d1 + d2 + d3 == 2020 {
+                    answer_2 = d1 * d2 * d3;
+                    answer_not_found = false;
+                }
             }
         }
     }
+
+    println!("Answer 1/2: {}", answer_1);
+    println!("Answer 2/2: {}", answer_2);
 }
 
 fn day_2() {
