@@ -264,51 +264,80 @@ fn day_7() {
     let re_list = Regex::new(r"(\d) ([a-z]+ [a-z]+)").unwrap(); 
     
     // HashMap to store all the rules
-    let mut rules: HashMap<String, Vec<String>> = HashMap::new();
+    let mut bag_rules: HashMap<String, Vec<(String, u32)>> = HashMap::new();
 
     for cap in re.captures_iter(&data) {
         let list = match cap.name("list") {
             Some(list) => {
-                let mut v: Vec<String> = [].to_vec();
+                let mut v: Vec<(String, u32)> = [].to_vec();
                 for item in re_list.captures_iter(list.as_str()) {
-                    v.push(item[2].to_string());
+                    v.push((
+                        item[2].to_string(),
+                        item[1].parse().unwrap(),
+                    ));
                 }
                 v
             },
             None => [].to_vec(),
         };
 
-        rules.insert(cap["container"].to_string(), list);
+        bag_rules.insert(cap["container"].to_string(), list);
     }
+
+    let shiny_gold = "shiny gold";
 
     let mut sum : usize = 0;
 
-    for (color, _list) in rules.iter() {
-        if contains_shiny_gold (&rules, &color) {
+    for (bag_color, _list) in bag_rules.iter() {
+        if bag_contains(shiny_gold, &bag_color, &bag_rules) {
             sum += 1
         }
     }
 
+    let sum_2 = count_bags(&bag_rules, shiny_gold) - 1; // minus the shiny gold bag
+
     println!("Answer 1/2: {}", sum);
+    println!("Answer 2/2: {}", sum_2);
 }
 
-fn contains_shiny_gold (
-    rules: &HashMap<String, Vec<String>>,
-    color: &str) -> bool {
+fn count_bags(
+    bag_rules: &HashMap<String, Vec<(String, u32)>>,
+    bag_color: &str) -> u64 {
+        let bag_infos = match bag_rules.get(bag_color) {
+            Some(b) => b,
+            None => {
+                return 1;
+            }
+        };
 
-    let contained_colors: Vec<&str> = match rules.get(color) {
-        Some(colors) => colors.iter().map(|x| x.as_str()).collect(),
+        let mut sum = 1; // current bag
+
+        for info in bag_infos {
+            sum += info.1 as u64 * count_bags(bag_rules, info.0.as_str());
+        }
+
+        sum
+}
+
+fn bag_contains (
+    needle: &str,
+    bag_color: &str,
+    bag_rules: &HashMap<String, Vec<(String, u32)>>,
+) -> bool {
+
+    let bag_infos: Vec<&str> = match bag_rules.get(bag_color) {
+        Some(colors) => colors.iter().map(|x| x.0.as_str()).collect(),
         None => {
             return false;
         }
     };
 
-    if contained_colors.contains(&"shiny gold") {
+    if bag_infos.contains(&needle) {
         return true;
     }
 
-    for contained_color in contained_colors {
-        if contains_shiny_gold(rules, contained_color) {
+    for bag_color in bag_infos {
+        if bag_contains(needle, bag_color, bag_rules) {
             return true;
         }
     }
