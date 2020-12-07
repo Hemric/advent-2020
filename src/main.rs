@@ -22,6 +22,7 @@ fn main() {
         4 => day_4(),
         5 => day_5(),
         6 => day_6(),
+        7 => day_7(),
         _ => println!("Challenge not found"),
     }
 }
@@ -255,4 +256,62 @@ fn day_6() {
 
     println!("Answer 1/2: {}", sum_1);
     println!("Answer 2/2: {}", sum_2);
+}
+
+fn day_7() {
+    let data = load_data("./data/day_7.txt");
+    let re = Regex::new(r"\b(?P<container>[a-z]+ [a-z]+) bags \b(?:contain no|contain(?P<list>(?: \d+ [a-z]+ [a-z]+ bags?.)+))").unwrap();
+    let re_list = Regex::new(r"(\d) ([a-z]+ [a-z]+)").unwrap(); 
+    
+    // HashMap to store all the rules
+    let mut rules: HashMap<String, Vec<String>> = HashMap::new();
+
+    for cap in re.captures_iter(&data) {
+        let list = match cap.name("list") {
+            Some(list) => {
+                let mut v: Vec<String> = [].to_vec();
+                for item in re_list.captures_iter(list.as_str()) {
+                    v.push(item[2].to_string());
+                }
+                v
+            },
+            None => [].to_vec(),
+        };
+
+        rules.insert(cap["container"].to_string(), list);
+    }
+
+    let mut sum : usize = 0;
+
+    for (color, _list) in rules.iter() {
+        if contains_shiny_gold (&rules, &color) {
+            sum += 1
+        }
+    }
+
+    println!("Answer 1/2: {}", sum);
+}
+
+fn contains_shiny_gold (
+    rules: &HashMap<String, Vec<String>>,
+    color: &str) -> bool {
+
+    let contained_colors: Vec<&str> = match rules.get(color) {
+        Some(colors) => colors.iter().map(|x| x.as_str()).collect(),
+        None => {
+            return false;
+        }
+    };
+
+    if contained_colors.contains(&"shiny gold") {
+        return true;
+    }
+
+    for contained_color in contained_colors {
+        if contains_shiny_gold(rules, contained_color) {
+            return true;
+        }
+    }
+
+    return false;
 }
