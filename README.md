@@ -8,5 +8,5 @@ Don't panic! 😱 code and project structure will evolve as i progress through R
 2. Launch
 
 ```
-cargo run
+cargo run --bin day_*
 ```
