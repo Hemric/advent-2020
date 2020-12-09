@@ -1,4 +1,5 @@
 use std::cmp;
+use std::cmp::Ordering;
 
 mod utils;
 
@@ -7,9 +8,40 @@ fn main() {
 
     let nbs: Vec<u64> = data.lines().map(|nb| nb.parse().unwrap()).collect();
 
+    let weak_nb: &u64 = find_weak_nb(&nbs).unwrap();
+    let weakness: u64 = find_weakness(&nbs, &weak_nb).unwrap();
+
+    println!("Answer 1/2: {}", weak_nb);
+    println!("Answer 2/2: {}", weakness);
+}
+
+fn find_weakness(nbs: &Vec<u64>, weak_nb: &u64) -> Option<u64> {
+    let nbs_len = nbs.len();
+    let mut w_start: usize = 0;
+    let mut w_end: usize = 2;
+
+    while w_end < nbs_len {
+        let w: &[u64] = &nbs[w_start..w_end];
+        let w_sum: u64 = w.iter().sum();
+
+        match w_sum.cmp(weak_nb) {
+            Ordering::Greater => {
+                w_start += 1;
+                w_end = w_start + 2;
+            }
+            Ordering::Less => {
+                w_end += 1;
+            }
+            Ordering::Equal => return Some(w.iter().min().unwrap() + w.iter().max().unwrap()),
+        }
+    }
+
+    None
+}
+
+fn find_weak_nb(nbs: &Vec<u64>) -> Option<&u64> {
     let pre_len = 25;
     let nbs_len = nbs.len();
-    let mut nb_invalid = None;
 
     for (i, nb) in nbs.iter().skip(pre_len).enumerate() {
         let pre_end = cmp::min(nbs_len, i + pre_len);
@@ -17,13 +49,12 @@ fn main() {
 
         if is_valid(&nb, &pre) {
             continue;
-        } else {
-            nb_invalid = Some(nb);
-            break;
         }
+
+        return Some(nb);
     }
 
-    println!("Answer 1/2: {}", nb_invalid.unwrap());
+    None
 }
 
 fn is_valid(nb: &u64, pre: &[u64]) -> bool {
