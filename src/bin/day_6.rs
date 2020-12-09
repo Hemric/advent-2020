@@ -3,7 +3,7 @@ use std::collections::HashMap;
 mod utils;
 
 fn main() {
-    let data = utils::load_input("./data/day_6.txt");
+    let data = utils::load_input("./data/day_6.txt").unwrap();
     let groups: Vec<&str> = data.split("\n\n").collect();
 
     let mut sum_1: usize = 0;

@@ -1,7 +1,7 @@
 mod utils;
 
 fn main() {
-    let data = utils::load_input("./data/day_8.txt");
+    let data = utils::load_input("./data/day_8.txt").unwrap();
 
     let instructions: Vec<(&str, i32)> = data
         .lines()

@@ -1,7 +1,7 @@
 mod utils;
 
 fn main() {
-    let data = utils::load_input("./data/day_3.txt");
+    let data = utils::load_input("./data/day_3.txt").unwrap();
     let lines: Vec<&str> = data.split("\n").collect();
 
     let configs = [[1, 1], [3, 1], [5, 1], [7, 1], [1, 2]];

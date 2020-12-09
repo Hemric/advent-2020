@@ -1,11 +1,8 @@
-use std::fs::File;
-use std::io::prelude::*;
-use std::path::Path;
+use std::fs;
+use std::io;
 
-pub fn load_input(path: &str) -> String {
-    let mut file = File::open(Path::new(path)).expect("Error opening file");
-    let mut data = String::new();
-    file.read_to_string(&mut data).expect("Error reading file");
-
-    data.trim_end().to_string()
+pub fn load_input(path: &str) -> Result<String, io::Error> {
+    let data = fs::read_to_string(path)?;
+    
+    Ok(data.trim_end().to_string())
 }

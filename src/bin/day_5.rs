@@ -1,7 +1,7 @@
 mod utils;
 
 fn main() {
-    let data = utils::load_input("./data/day_5.txt");
+    let data = utils::load_input("./data/day_5.txt").unwrap();
     let tickets: Vec<&str> = data.split("\n").collect();
     let mut seats: Vec<u32> = [].to_vec();
 

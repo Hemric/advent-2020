@@ -4,7 +4,7 @@ use std::collections::HashMap;
 mod utils;
 
 fn main() {
-    let data = utils::load_input("./data/day_7.txt");
+    let data = utils::load_input("./data/day_7.txt").unwrap();
     let re = Regex::new(r"\b(?P<container>[a-z]+ [a-z]+) bags \b(?:contain no|contain(?P<list>(?: \d+ [a-z]+ [a-z]+ bags?.)+))").unwrap();
     let re_list = Regex::new(r"(\d) ([a-z]+ [a-z]+)").unwrap();
 

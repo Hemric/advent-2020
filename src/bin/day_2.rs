@@ -3,7 +3,7 @@ use regex::Regex;
 mod utils;
 
 fn main() {
-    let data = utils::load_input("./data/day_2.txt");
+    let data = utils::load_input("./data/day_2.txt").unwrap();
     let re =
         Regex::new(r"(?P<min>\d+)-(?P<max>\d+) (?P<letter>[a-z]): (?P<password>[a-z]*)").unwrap();
     let mut valid_password_count = 0;

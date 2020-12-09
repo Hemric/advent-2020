@@ -3,7 +3,7 @@ use regex::RegexSet;
 mod utils;
 
 fn main() {
-    let data = utils::load_input("./data/day_4.txt");
+    let data = utils::load_input("./data/day_4.txt").unwrap();
     let passports: Vec<&str> = data.split("\n\n").collect();
 
     let set_1 = RegexSet::new(&[
