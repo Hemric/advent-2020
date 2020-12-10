@@ -13,7 +13,7 @@ fn main() {
     nbs.push(nbs.last().unwrap() + 3);
 
     let mut diff: (u32, u32) = (0, 0);
-    let mut nb_prev: &u32 = &0;
+    let mut nb_prev: u32 = 0;
 
     for nb in nbs.iter() {
         if nb_prev + 1 == *nb {
@@ -22,7 +22,7 @@ fn main() {
         if nb_prev + 3 == *nb {
             diff.1 += 1;
         }
-        nb_prev = nb;
+        nb_prev = *nb;
     }
 
     println!("Answer 1/2: {}", diff.0 * diff.1);
@@ -32,7 +32,7 @@ fn main() {
     );
 }
 
-fn count_combinations(i: usize, memo: &mut HashMap<usize, usize>, nbs: &Vec<u32>) -> usize {
+fn count_combinations(i: usize, memo: &mut HashMap<usize, usize>, nbs: &[u32]) -> usize {
     if i == nbs.len() - 1 {
         return 1; // 1 path has been found
     }

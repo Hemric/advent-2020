@@ -8,14 +8,14 @@ fn main() {
 
     let nbs: Vec<u64> = data.lines().map(|nb| nb.parse().unwrap()).collect();
 
-    let weak_nb: &u64 = find_weak_nb(&nbs).unwrap();
-    let weakness: u64 = find_weakness(&nbs, &weak_nb).unwrap();
+    let invalid_nb: u64 = find_invalid_nb(&nbs).unwrap();
+    let weakness: u64 = find_weakness(&nbs, invalid_nb).unwrap();
 
-    println!("Answer 1/2: {}", weak_nb);
+    println!("Answer 1/2: {}", invalid_nb);
     println!("Answer 2/2: {}", weakness);
 }
 
-fn find_weakness(nbs: &Vec<u64>, weak_nb: &u64) -> Option<u64> {
+fn find_weakness(nbs: &[u64], invalid_nb: u64) -> Option<u64> {
     let nbs_len = nbs.len();
     let mut w_start: usize = 0;
     let mut w_end: usize = 2;
@@ -24,7 +24,7 @@ fn find_weakness(nbs: &Vec<u64>, weak_nb: &u64) -> Option<u64> {
         let w: &[u64] = &nbs[w_start..w_end];
         let w_sum: u64 = w.iter().sum();
 
-        match w_sum.cmp(weak_nb) {
+        match w_sum.cmp(&invalid_nb) {
             Ordering::Greater => {
                 w_start += 1;
                 w_end = w_start + 2;
@@ -39,7 +39,7 @@ fn find_weakness(nbs: &Vec<u64>, weak_nb: &u64) -> Option<u64> {
     None
 }
 
-fn find_weak_nb(nbs: &Vec<u64>) -> Option<&u64> {
+fn find_invalid_nb(nbs: &[u64]) -> Option<u64> {
     let pre_len = 25;
     let nbs_len = nbs.len();
 
@@ -51,7 +51,7 @@ fn find_weak_nb(nbs: &Vec<u64>) -> Option<&u64> {
             continue;
         }
 
-        return Some(nb);
+        return Some(*nb);
     }
 
     None
